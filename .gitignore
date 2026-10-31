@@ -1,0 +1,24 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+
+# Node.js and build output
+node_modules/
+.next/
+out/
+dist/
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+.turbo/
+
+# Local platform configuration and generated artifacts
+.vercel/
+artifacts/
+*.zip
+
+# Operating system files
+.DS_Store
+Thumbs.db
