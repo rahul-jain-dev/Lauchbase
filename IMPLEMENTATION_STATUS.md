@@ -8,7 +8,7 @@
 
 - Workspace confirmed and planning documents reviewed.
 - Next.js App Router, React, TypeScript, Tailwind CSS and pnpm application created at the workspace root. Exact dependency versions and the lockfile are tracked in Git.
-- Available locally: Node.js 22.23.2, npm 10.9.2, Corepack 0.34.6, pnpm 11.25.0, and Git 2.45.1.
+- Available locally: Node.js 22.23.2, npm 10.9.8, Corepack 0.34.6, pnpm 11.25.0, and Git 2.45.1.
 - Yarn is not installed. The plan uses pnpm, which is available.
 - Account access, API credentials, hosting, database, workflow, and isolated execution access remain unverified.
 - `.env.example` documents `META_API_KEY` and `META_MODEL`. Ignored `.env.local` contains placeholders only; no real secrets have been entered.
