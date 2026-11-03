@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { InferenceEvidence, ProviderStatus } from "./inference";
+import { ScopeRequirement } from "./scope";
 
 export const Need = z.enum(["unknown", "required", "optional", "no"]);
 export const Assumption = z
@@ -56,12 +58,26 @@ export const Requirements = z
     supabaseEligibility: z.enum(["unknown", "eligible", "ineligible"]),
     hardRequirements: z.array(z.string().trim().min(1).max(200)).max(10),
     assumptions: z.array(Assumption).max(2),
+    scope: z.array(ScopeRequirement).max(30).optional(),
   })
   .strict()
   .refine(
     (r) =>
       new Set(r.assumptions.map((a) => a.field)).size === r.assumptions.length,
     "Only one assumption per field is allowed",
+  )
+  .refine(
+    (r) => new Set(r.scope?.map((s) => s.id)).size === (r.scope?.length ?? 0),
+    "Scope requirement identifiers must be unique",
+  )
+  .refine(
+    (r) =>
+      (r.scope ?? []).every(
+        (s) =>
+          s.source !== "model" ||
+          (s.excerpt !== null && r.idea.includes(s.excerpt)),
+      ),
+    "Model-sourced scope must retain an exact excerpt of the current idea",
   );
 export type Requirements = z.infer<typeof Requirements>;
 
@@ -151,8 +167,8 @@ export const RecommendationResult = z.object({
   state: z.enum([
     "needs_clarification",
     "unsupported",
-    "meta_configuration_required",
-    "meta_error",
+    "provider_configuration_required",
+    "provider_error",
     "recommended",
   ]),
   eligible: z.array(Foundation),
@@ -166,6 +182,7 @@ export const RecommendationResult = z.object({
     z.object({ foundationId: z.string(), explanations: z.array(z.string()) }),
   ),
   message: z.string(),
-  meta: z.object({ model: z.string(), calledAt: z.iso.datetime() }).nullable(),
+  meta: InferenceEvidence.nullable(),
+  activeProvider: ProviderStatus.optional(),
 });
 export type RecommendationResult = z.infer<typeof RecommendationResult>;

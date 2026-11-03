@@ -20,6 +20,20 @@ playwright-report/
 artifacts/
 *.zip
 
+# Credentials and browser/session state
+*.pem
+*.key
+.auth/
+.playwright/
+playwright/.auth/
+browser-profiles/
+storageState*.json
+storage-state*.json
+*.storage-state.json
+cookies*.json
+*.har
+*.log
+
 # Operating system files
 .DS_Store
 Thumbs.db

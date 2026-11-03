@@ -15,7 +15,8 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "smoke:meta": "node --env-file-if-exists=.env.local scripts/meta-smoke.mjs"
+    "smoke:provider": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/provider-smoke.ts",
+    "smoke:meta": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/provider-smoke.ts --provider meta"
   },
   "dependencies": {
     "next": "16.4.3",
@@ -34,6 +35,7 @@
     "eslint-config-next": "16.4.3",
     "prettier": "3.9.10",
     "tailwindcss": "4.3.3",
+    "tsx": "4.23.15",
     "typescript": "5.9.3",
     "vitest": "5.0.5"
   }

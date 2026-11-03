@@ -1,9 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 const meta = vi.hoisted(() => ({
-  metaConfigured: vi.fn(),
-  rankWithMeta: vi.fn(),
+  providerStatus: vi.fn(),
+  rankFoundations: vi.fn(),
 }));
-vi.mock("../src/server/meta", () => meta);
+vi.mock("../src/server/ai", () => meta);
+vi.mock("../src/server/connections/service", () => ({
+  resolveConnection: () => ({
+    status: meta.providerStatus(),
+    config: meta.providerStatus().ready
+      ? {
+          provider: "meta",
+          model: "muse-spark-1.3",
+          apiKey: "fixture-session-key",
+          endpoint: "https://api.meta.ai/v1",
+        }
+      : undefined,
+  }),
+}));
 import { POST } from "../src/app/api/recommend/route";
 import type { Requirements } from "../src/lib/contracts";
 
@@ -35,16 +48,28 @@ const request = (value: unknown) =>
   });
 beforeEach(() => {
   vi.resetAllMocks();
-  meta.metaConfigured.mockReturnValue(false);
+  meta.providerStatus.mockReturnValue({
+    provider: "meta",
+    model: "muse-spark-1.3",
+    ready: false,
+    issue: { code: "configuration_required", message: "Set META_API_KEY" },
+  });
 });
 describe("recommendation endpoint (mocked Meta boundary)", () => {
   it("runs filtering with an explicit missing-configuration state", async () => {
     const response = await POST(request(fixture));
-    expect((await response.json()).state).toBe("meta_configuration_required");
-    expect(meta.rankWithMeta).not.toHaveBeenCalled();
+    expect((await response.json()).state).toBe(
+      "provider_configuration_required",
+    );
+    expect(meta.rankFoundations).not.toHaveBeenCalled();
   });
   it("never calls Meta for rejected constraints or unknown requirements", async () => {
-    meta.metaConfigured.mockReturnValue(true);
+    meta.providerStatus.mockReturnValue({
+      provider: "meta",
+      model: "muse-spark-1.3",
+      ready: true,
+      issue: null,
+    });
     expect(
       (await (await POST(request({ ...fixture, language: "python" }))).json())
         .state,
@@ -53,9 +78,20 @@ describe("recommendation endpoint (mocked Meta boundary)", () => {
       (await (await POST(request({ ...fixture, uploads: "unknown" }))).json())
         .state,
     ).toBe("needs_clarification");
-    expect(meta.rankWithMeta).not.toHaveBeenCalled();
+    expect(meta.rankFoundations).not.toHaveBeenCalled();
   });
   it("rejects malformed inputs and foreign-origin requests", async () => {
+    expect(
+      (
+        await POST(
+          request({
+            ...fixture,
+            endpoint: "https://attacker.example.com",
+            provider: "gemini",
+          }),
+        )
+      ).status,
+    ).toBe(400);
     expect((await POST(request({ idea: "x" }))).status).toBe(400);
     const foreign = request(fixture);
     foreign.headers.set("origin", "https://foreign.example");
@@ -72,16 +108,26 @@ describe("recommendation endpoint (mocked Meta boundary)", () => {
     ).toBe(400);
   });
   it("returns a safe failure when the provider fails; never leaks its message", async () => {
-    meta.metaConfigured.mockReturnValue(true);
-    meta.rankWithMeta.mockRejectedValue(new Error("secret-provider-detail"));
+    meta.providerStatus.mockReturnValue({
+      provider: "meta",
+      model: "muse-spark-1.3",
+      ready: true,
+      issue: null,
+    });
+    meta.rankFoundations.mockRejectedValue(new Error("secret-provider-detail"));
     const body = await (await POST(request(fixture))).json();
-    expect(body.state).toBe("meta_error");
+    expect(body.state).toBe("provider_error");
     expect(body.rankings).toEqual([]);
     expect(JSON.stringify(body)).not.toContain("secret-provider-detail");
   });
   it("returns a validated result from the adapter (fixture only)", async () => {
-    meta.metaConfigured.mockReturnValue(true);
-    meta.rankWithMeta.mockResolvedValue({
+    meta.providerStatus.mockReturnValue({
+      provider: "meta",
+      model: "muse-spark-1.3",
+      ready: true,
+      issue: null,
+    });
+    meta.rankFoundations.mockResolvedValue({
       rankings: [
         { foundationId: "individual", explanations: ["Fixture explanation"] },
       ],

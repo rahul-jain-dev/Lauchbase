@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { Requirements, RecommendationResult } from "../../../lib/contracts";
 import { filterCatalog } from "../../../lib/recommendation";
-import { metaConfigured, rankWithMeta } from "../../../server/meta";
+import { rankFoundations } from "../../../server/ai";
+import { resolveConnection } from "../../../server/connections/service";
+import { safeProviderError } from "../../../server/providers/errors";
 
 export const runtime = "nodejs";
+export const maxDuration = 180;
 export async function POST(request: Request) {
   if (
     request.headers.get("origin") &&
@@ -31,28 +34,31 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   const result = filterCatalog(parsed.data);
+  const { status: activeProvider, config } = resolveConnection(request);
   if (
     ["unsupported", "needs_clarification"].includes(result.state) ||
-    !metaConfigured()
+    !activeProvider.ready
   )
-    return NextResponse.json(result);
+    return NextResponse.json({ ...result, activeProvider });
   try {
-    const ranked = await rankWithMeta(parsed.data);
+    const ranked = await rankFoundations(parsed.data, config);
     return NextResponse.json(
       RecommendationResult.parse({
         ...result,
         ...ranked,
+        activeProvider,
         state: "recommended",
         message:
-          "Meta ranked the eligible definitions. Budget fit, generation and integration verification remain unresolved.",
+          "The selected provider ranked the eligible definitions. Budget fit, generation and integration verification remain unresolved.",
       }),
     );
-  } catch {
+  } catch (error) {
     return NextResponse.json({
       ...result,
-      state: "meta_error",
+      state: "provider_error",
+      activeProvider: { ...activeProvider, issue: safeProviderError(error) },
       message:
-        "Meta ranking failed or returned an invalid selection. No AI recommendation was accepted. Check your key, account/model access, then retry.",
+        "The selected provider failed or returned an invalid selection. No AI recommendation was accepted. Review the provider error and retry.",
     });
   }
 }

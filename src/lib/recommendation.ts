@@ -1,4 +1,5 @@
 import { catalog } from "./catalog";
+import { scopeDecisions, dependencyLabels } from "./scope";
 import {
   ModelRanking,
   RecommendationResult,
@@ -23,6 +24,41 @@ export function effectiveRequirements(input: Requirements): Requirements {
         r.hosting = a.value;
     }
   }
+  for (const item of r.scope ?? [])
+    if (
+      item.confirmed &&
+      item.importance === "essential" &&
+      item.category === "technical_constraint"
+    ) {
+      if (
+        item.constraint === "self_host_only" &&
+        ["unknown", "no-preference", "self-host"].includes(r.hosting)
+      ) {
+        r.hosting = "self-host";
+        r.hostingIsHard = true;
+      }
+      if (
+        item.constraint === "typescript_only" &&
+        ["unknown", "no-preference", "typescript"].includes(r.language)
+      ) {
+        r.language = "typescript";
+        r.stackIsHard = true;
+      }
+      if (
+        item.constraint === "python_only" &&
+        ["unknown", "no-preference", "python"].includes(r.language)
+      ) {
+        r.language = "python";
+        r.stackIsHard = true;
+      }
+      if (
+        item.constraint === "nextjs_only" &&
+        ["unknown", "no-preference", "nextjs"].includes(r.framework)
+      ) {
+        r.framework = "nextjs";
+        r.stackIsHard = true;
+      }
+    }
   return r;
 }
 
@@ -32,23 +68,75 @@ export function filterCatalog(input: Requirements): RecommendationResult {
     r.hardRequirements.some((h) => h.toLowerCase() === "uploads") &&
     r.uploads !== "required";
   const questions: RecommendationResult["questions"] = [];
+  const scope = scopeDecisions(r.scope ?? []);
+  scope.questions.forEach((question, i) =>
+    questions.push({ id: `scope-${i}`, fields: ["scope"], question }),
+  );
+  for (const item of r.scope ?? [])
+    if (item.confirmed && item.importance === "essential") {
+      const requiredChoices: Record<
+        string,
+        [keyof Requirements, string] | undefined
+      > = {
+        self_host_only: ["hosting", "self-host"],
+        typescript_only: ["language", "typescript"],
+        python_only: ["language", "python"],
+        nextjs_only: ["framework", "nextjs"],
+      };
+      const requiredChoice = requiredChoices[item.constraint ?? "none"];
+      if (
+        item.category === "technical_constraint" &&
+        requiredChoice &&
+        !["unknown", "no-preference", requiredChoice[1]].includes(
+          String(r[requiredChoice[0] as keyof Requirements]),
+        )
+      )
+        questions.push({
+          id: `technical-conflict-${item.id}`,
+          fields: ["scope", requiredChoice[0]],
+          question: `Resolve the conflicting explicit technical choices for: ${item.text}`,
+        });
+      if (item.dependencies.includes("private_files") && r.uploads === "no")
+        questions.push({
+          id: `scope-files-${item.id}`,
+          fields: ["scope", "uploads"],
+          question: `“${item.text}” needs private files but uploads are excluded. Resolve this conflict explicitly.`,
+        });
+      if (
+        item.dependencies.includes("workspaces") &&
+        r.accountModel === "individual"
+      )
+        questions.push({
+          id: `scope-team-${item.id}`,
+          fields: ["scope", "accountModel"],
+          question: `“${item.text}” needs shared workspaces but independent accounts were selected. Resolve this conflict explicitly.`,
+        });
+    }
   const ask = (id: string, fields: string[], question: string) =>
     questions.push({ id, fields, question });
   if (
-    r.experience === "unknown" ||
-    r.language === "unknown" ||
-    r.framework === "unknown"
+    r.stackIsHard &&
+    (r.language === "unknown" || r.framework === "unknown") &&
+    (input.stackIsHard ||
+      !(r.scope ?? []).some(
+        (s) =>
+          s.confirmed &&
+          s.importance === "essential" &&
+          ["typescript_only", "python_only", "nextjs_only"].includes(
+            s.constraint ?? "none",
+          ),
+      ))
   )
     ask(
       "stack",
-      ["experience", "language", "framework"],
-      "What is your experience and preferred language/framework? Choose no preference if flexible.",
+      ["language", "framework"],
+      "You marked your technology choices as essential. Which language and framework must the product use?",
     );
   if (r.accountModel === "unknown")
     ask(
       "accounts",
       ["accountModel"],
-      "Will records belong to individual users or shared team workspaces? Either is also an explicit choice.",
+      "Will customers work independently, or collaborate in shared workspaces?",
     );
   if (
     [r.billing, r.uploads, r.background].includes("unknown") ||
@@ -56,28 +144,51 @@ export function filterCatalog(input: Requirements): RecommendationResult {
   )
     ask(
       "capabilities",
-      ["billing", "uploads", "background"],
+      ["billing", "uploads", "background"].filter(
+        (field) =>
+          r[field as "billing" | "uploads" | "background"] === "unknown" ||
+          (field === "uploads" && uploadsNeedClarification),
+      ),
       uploadsNeedClarification
         ? "You listed uploads as a hard requirement. Select Required for file uploads, or remove that hard requirement, to resolve the conflicting answers."
         : "Are billing, uploads and background jobs required, optional, or unnecessary?",
     );
-  if (r.monthlyBudget === null || r.hosting === "unknown")
+  if (r.hostingIsHard && r.hosting === "unknown")
     ask(
       "operations",
-      ["monthlyBudget", "hosting"],
-      "What is your monthly infrastructure ceiling in USD, and where would you like to host?",
-    );
-  if (!r.country || r.supabaseEligibility === "unknown")
-    ask(
-      "eligibility",
-      ["country", "supabaseEligibility"],
-      "Which country will you operate from, and can you use Supabase under your account and regional requirements?",
+      ["hosting"],
+      "You marked hosting as essential. Which hosting target must the product use?",
     );
 
   const unresolved = [
+    ...scope.gaps,
     "Catalog definitions only: generated applications and integrations have not been implemented or verified.",
     "Budget fit is unverified: usage, provider plans and current pricing must be evaluated before choosing a foundation.",
   ];
+  if (r.monthlyBudget === null)
+    unresolved.push(
+      "Your budget is not decided yet; no cost fit is established.",
+    );
+  else if (r.monthlyBudget === 0)
+    unresolved.push(
+      "Your budget ceiling is explicitly $0/month. Free-tier eligibility and usage limits must be verified; zero-cost operation is not established.",
+    );
+  else
+    unresolved.push(
+      `Your infrastructure ceiling is $${r.monthlyBudget}/month; provider and usage costs still need evaluation.`,
+    );
+  if (r.supabaseEligibility === "unknown")
+    unresolved.push(
+      "Both definitions consider Supabase for sign-in and saved records. Account, region and provider eligibility must be checked during setup; compatibility is unknown.",
+    );
+  if (r.language === "unknown" || r.framework === "unknown")
+    unresolved.push(
+      "Technology preferences are unspecified; the catalog describes TypeScript and Next.js, with no assumption that you have accepted them.",
+    );
+  if (r.hosting === "unknown")
+    unresolved.push(
+      "Hosting is undecided and will need confirmation during setup.",
+    );
   if (r.existingServices)
     unresolved.push(
       "Existing services are context only. No migration or extra integration is promised: " +
@@ -113,6 +224,23 @@ export function filterCatalog(input: Requirements): RecommendationResult {
   const eliminated: RecommendationResult["eliminated"] = [];
   const eligible = catalog.filter((f) => {
     const reasons: string[] = [];
+    reasons.push(...scope.blockers);
+    const dependencyCaps: Record<string, string> = {
+      sign_in: "auth",
+      saved_records: "crud",
+      workspaces: "teams",
+      invitations: "invitations",
+      private_files: "uploads",
+    };
+    for (const item of r.scope ?? [])
+      if (item.confirmed && item.importance === "essential")
+        for (const dependency of item.dependencies) {
+          const cap = dependencyCaps[dependency];
+          if (cap && !f.capabilities.includes(cap))
+            reasons.push(
+              `“${item.text}” requires ${dependencyLabels[dependency]}, absent from this definition.`,
+            );
+        }
     if (
       r.stackIsHard &&
       !["unknown", "typescript", "no-preference"].includes(r.language)
@@ -178,7 +306,7 @@ export function filterCatalog(input: Requirements): RecommendationResult {
       ? "unsupported"
       : questions.length
         ? "needs_clarification"
-        : "meta_configuration_required",
+        : "provider_configuration_required",
     eligible,
     eliminated,
     unresolved,
@@ -188,8 +316,8 @@ export function filterCatalog(input: Requirements): RecommendationResult {
     message: !eligible.length
       ? "No definition meets your declared hard requirements."
       : questions.length
-        ? "Answer the follow-up questions before Meta ranking. Remaining definitions are provisional, not confirmed compatible."
-        : "Deterministic filtering complete. Meta configuration required for AI ranking.",
+        ? "Answer the follow-up questions before AI ranking. Remaining definitions are provisional, not confirmed compatible."
+        : "Deterministic filtering complete. Provider configuration required for AI ranking.",
     meta: null,
   });
 }

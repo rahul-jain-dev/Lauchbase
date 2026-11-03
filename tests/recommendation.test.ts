@@ -84,7 +84,11 @@ describe("hard-constraint filtering", () => {
       supabaseEligibility: "unknown",
     });
     expect(result.state).toBe("needs_clarification");
-    expect(result.questions).toHaveLength(5);
+    expect(result.questions.map((q) => q.id)).toEqual([
+      "stack",
+      "accounts",
+      "capabilities",
+    ]);
     expect(result.rankings).toHaveLength(0);
     expect(() =>
       validateModelRanking(modelFixture, {
@@ -140,7 +144,7 @@ describe("model output boundary (fixtures only)", () => {
       validateModelRanking(modelFixture, supportedFixture)[0].foundationId,
     ).toBe("individual");
     expect(filterCatalog(supportedFixture).state).toBe(
-      "meta_configuration_required",
+      "provider_configuration_required",
     );
   });
   it.each([

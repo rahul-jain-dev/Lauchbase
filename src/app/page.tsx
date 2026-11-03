@@ -1,6 +1,8 @@
 import { Intake } from "../components/intake";
 import { catalog } from "../lib/catalog";
+import { capabilityLabels } from "../lib/idea-analysis";
 import Link from "next/link";
+import { AISettings } from "../components/ai-settings";
 export default function Page() {
   return (
     <main>
@@ -10,6 +12,7 @@ export default function Page() {
         </Link>
         <span className="badge">BUILD FOR YOUR WORLD</span>
         <span className="release">Foundation explorer · 0.1</span>
+        <AISettings />
       </header>
       <div className="hero">
         <p className="eyebrow">LESS GUESSWORK. A CLEARER START.</p>
@@ -36,7 +39,10 @@ export default function Page() {
         </div>
       </div>
       <Intake />
-      <section className="catalog-section" aria-labelledby="catalog-title">
+      <details className="catalog-section">
+        <summary>
+          Explore the two foundation definitions & their sources
+        </summary>
         <div className="section-heading">
           <div>
             <p className="eyebrow">A SMALL, TRANSPARENT CATALOG</p>
@@ -54,7 +60,7 @@ export default function Page() {
               <p>{f.description}</p>
               <div className="tags">
                 {f.capabilities.map((c) => (
-                  <span key={c}>{c}</span>
+                  <span key={c}>{capabilityLabels[c] ?? c}</span>
                 ))}
               </div>
               <details>
@@ -86,13 +92,10 @@ export default function Page() {
                 ))}
                 <p>Reviewed {f.reviewedAt} · Verification planned</p>
               </details>
-              <p className="catalog-note">
-                Catalog definition · No generated or verified application yet
-              </p>
             </article>
           ))}
         </div>
-      </section>
+      </details>
       <footer>
         LaunchBase / Meta AI hackathon{" "}
         <span>Transparent choices. Observable progress.</span>

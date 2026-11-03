@@ -1,6 +1,6 @@
 import { Foundation, ModuleEntry } from "./contracts";
 
-export const catalogVersion = "0.1.0-definition";
+export const catalogVersion = "0.2.0-definition";
 const sources = [
   "https://nextjs.org/docs/app/getting-started/installation",
   "https://supabase.com/docs/guides/auth",
@@ -117,6 +117,7 @@ export const catalog = Foundation.array().parse([
       "Individual-only ownership is a different preset",
       "Billing and background jobs are outside this definition",
       "Tenant isolation and uploads are not yet implemented or verified",
+      "Workspace membership does not provide project-level client permissions; project access rules require an extension and isolation tests",
     ],
     sources: [...sources, "https://supabase.com/docs/guides/storage"],
     reviewedAt: "2026-10-31",
