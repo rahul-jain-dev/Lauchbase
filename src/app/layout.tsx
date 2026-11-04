@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 export const metadata: Metadata = {
-  title: "LaunchBase · Find your foundation",
+  title: "Skeleton AI · Your SaaS foundation architect",
   description:
-    "Match your SaaS idea and constraints to a transparent foundation catalog.",
+    "Turn a micro-SaaS idea into a clear, constraint-aware product foundation, architecture map and build plan.",
 };
 export default function RootLayout({
   children,
