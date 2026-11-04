@@ -1,0 +1,19 @@
+# One Node process: credentials live in isolated, expiring in-memory sessions.
+# This prepares a deployment; it does not establish a live URL or verification.
+services:
+  - type: web
+    name: saasfoundation
+    runtime: node
+    branch: codex/submission-sprint
+    plan: free
+    numInstances: 1
+    buildCommand: npm exec --yes --package=pnpm@11.25.0 -- pnpm install --frozen-lockfile --prod=false && npm exec --yes --package=pnpm@11.25.0 -- pnpm build
+    startCommand: node node_modules/next/dist/bin/next start --hostname 0.0.0.0 --port ${PORT:-10000}
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: 22.23.2
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"

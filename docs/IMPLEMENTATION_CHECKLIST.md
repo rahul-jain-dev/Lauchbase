@@ -2,6 +2,22 @@
 
 This checklist tracks the agreed plan. A milestone is complete only when its exit evidence exists; planned features are not reported as built.
 
+## Active submission-only sprint — November 5, 2026
+
+Final identity: **SaaSFoundation — From an idea to a buildable foundation.** The full roadmap below is preserved and deferred until after submission.
+
+- [x] Audit the existing foundation-architect MVP and preserve all prior work/history.
+- [x] Inspect/integrate branding PR #1 on the submission branch; apply the user's final SaaSFoundation naming decision.
+- [x] Run current typecheck/lint/tests/build and critical desktop/mobile flow checks; record actual outcomes in status.
+- [x] Reproduce/fix production Settings origin handling; retain cross-origin rejection and HTTPS Secure cookies with targeted regression coverage.
+- [x] Check direct Meta configuration; the current smoke **skipped**, not a successful Meta request.
+- [x] Prepare a one-process deployment and accurate submission copy/narration.
+- [ ] Verify actual direct Meta analysis/ranking and representative semantic behavior using authorized credentials.
+- [ ] Provision the hosting service and verify the actual public URL, isolation and complete workflow.
+- [ ] Record/finalize the submission video using the actual portal's length limit and accurate inference attribution.
+- [ ] Confirm the authenticated form, participant track/eligibility and required fields; fill verified links and submit.
+- [ ] Record actual submission receipt, then resume the preserved roadmap.
+
 ## 0. Workspace setup
 
 ### Cloud continuation preparation — November 4, 2026

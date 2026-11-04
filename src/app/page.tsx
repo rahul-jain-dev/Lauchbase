@@ -8,33 +8,33 @@ export default function Page() {
     <main>
       <header className="topbar">
         <Link href="/" className="brand">
-          <span className="mark">S</span> Skeleton AI
+          <span className="mark">S</span> SaaSFoundation
         </Link>
         <span className="badge">BUILD FOR YOUR WORLD</span>
-        <span className="release">Foundation explorer · 0.1</span>
+        <span className="release">Foundation architect · prototype</span>
         <AISettings />
       </header>
       <div className="hero">
         <p className="eyebrow">LESS GUESSWORK. A CLEARER START.</p>
         <h1>
-          Your idea.
+          From an idea
           <br />
-          <span>A foundation that fits.</span>
+          <span>to a buildable foundation.</span>
         </h1>
         <p className="intro">
-          Tell us what you’re building and what matters to you. Explore
-          supported options, see the trade-offs, and understand what still needs
-          work.
+          Review what your micro-SaaS needs, compare supported foundations, and
+          understand how the pieces connect. A clear starting plan for
+          freelancers, founders and first-time builders.
         </p>
         <div className="steps">
           <span>
             <b>01</b> Describe your product
           </span>
           <span>
-            <b>02</b> Resolve the unknowns
+            <b>02</b> Confirm requirements
           </span>
           <span>
-            <b>03</b> Compare foundations
+            <b>03</b> Explore your foundation
           </span>
         </div>
       </div>
@@ -97,7 +97,7 @@ export default function Page() {
         </div>
       </details>
       <footer>
-        Skeleton AI / Meta AI hackathon{" "}
+        SaaSFoundation / Meta AI hackathon{" "}
         <span>Transparent choices. Observable progress.</span>
       </footer>
     </main>

@@ -1,5 +1,11 @@
 # LaunchBase — Implementation Chat Handoff
 
+## Immediate submission override — November 5, 2026
+
+The final submission name is **SaaSFoundation** (previously Skeleton AI and LaunchBase), with tagline **From an idea to a buildable foundation.** The full roadmap is preserved but on hold. Work on `codex/submission-sprint`; read `docs/SUBMISSION_SPRINT.md` and `docs/HACKATHON_SUBMISSION.md` first. The user authorized this sprint's deployment and actual submission using available approved access. Verify the current clock and authenticated portal; working cutoff is 07:30 IST. Do not build generation, exports, dashboards or new providers during the sprint.
+
+PR #1 was inspected and integrated on the submission branch with history preserved. Native Meta smoke currently skips for missing credentials; direct Meta, deployment, final video and portal receipt remain unverified until actual evidence exists. `render.yaml` prepares one Node process, not serverless replicas. Settings and inference must use the trusted configured public origin (`APP_ORIGIN` or Render's server-provided URL), preserving foreign-origin rejection and Secure cookies. Never relax protections to make a proxy work.
+
 ## Purpose and authorization
 
 This is the implementation handoff for a project the user has selected for the Meta Global AI Developer Hackathon. The original chat remains for planning, product decisions, scope, and judging strategy. The new chat should implement the agreed product, not restart brainstorming or revive discarded ideas.

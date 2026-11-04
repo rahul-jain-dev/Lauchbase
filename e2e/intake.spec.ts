@@ -175,7 +175,7 @@ test("simple start, honest missing Meta state and manual comparison on desktop/m
 }, info) => {
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Your idea. A foundation that fits." }),
+    page.getByRole("heading", { name: "From an idea to a buildable foundation." }),
   ).toBeVisible();
   expect(
     await page

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+vi.mock("server-only", () => ({}));
 const meta = vi.hoisted(() => ({
   providerStatus: vi.fn(),
   rankFoundations: vi.fn(),

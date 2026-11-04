@@ -17,6 +17,53 @@ async function needs(page: Page, team = false) {
     .getByLabel("Does your product need scheduled processing")
     .selectOption("no");
 }
+
+test("real loopback production APIs support manual planning and reject cross-origin Settings (no provider fixtures)", async ({
+  page,
+  baseURL,
+}) => {
+  const url = new URL(baseURL!);
+  url.hostname = "127.0.0.1";
+  await page.goto(url.href);
+  await page
+    .getByLabel("Your product idea")
+    .fill(
+      "A design agency client portal with private PDF uploads. No payments or background processing.",
+    );
+  await page.getByRole("button", { name: "Understand my idea" }).click();
+  await expect(
+    page.getByText("No AI extraction ran", { exact: false }),
+  ).toBeVisible();
+  await needs(page, true);
+  await page
+    .getByRole("button", { name: "Confirm scope", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Compare foundations" }).click();
+  await expect(
+    page
+      .locator("#results")
+      .getByRole("heading", { name: "Team / client-portal SaaS", exact: true }),
+  ).toBeVisible();
+  const status = await page.evaluate(
+    async () =>
+      (
+        await fetch("/api/connections", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "disconnect" }),
+        })
+      ).status,
+  );
+  expect(status).toBe(200);
+  const rejected = await page.request.post(
+    new URL("api/connections", url).href,
+    {
+      headers: { Origin: "https://foreign.example.com" },
+      data: { action: "disconnect" },
+    },
+  );
+  expect(rejected.status()).toBe(403);
+});
 test("confirmed agency workflows produce a plan, honest map and build review; edits stale the plan (fixtures)", async ({
   page,
 }, info) => {

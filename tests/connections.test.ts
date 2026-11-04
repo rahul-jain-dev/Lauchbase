@@ -94,6 +94,30 @@ beforeEach(() => {
   vi.stubGlobal("fetch", network);
   dns.lookup.mockResolvedValue([{ address: "8.8.8.8", family: 4 }]);
 });
+it("sets a Secure session cookie for the configured HTTPS public origin behind HTTP", async () => {
+  vi.stubEnv("APP_ORIGIN", "https://demo.example.com");
+  network.mockResolvedValueOnce(models());
+  const response = await POST(
+    new Request("http://0.0.0.0:10000/api/connections", {
+      method: "POST",
+      headers: {
+        Origin: "https://demo.example.com",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "connect",
+        profileId: "gemini",
+        apiKey: key,
+      }),
+    }),
+  );
+  expect(response.status).toBe(200);
+  expect(response.headers.get("set-cookie")).toContain("Secure");
+  expect(response.headers.get("set-cookie")).toContain("HttpOnly");
+  expect(response.headers.get("set-cookie")).toContain("SameSite=strict");
+  expect(JSON.stringify(await response.json())).not.toContain(key);
+});
+
 describe("session-authenticated timing comparison fixtures", () => {
   it("traces both minimal and full analysis through the active selection without recording secrets or ideas", async () => {
     const c = await selected();

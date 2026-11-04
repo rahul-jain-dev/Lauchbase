@@ -4,13 +4,14 @@ import { filterCatalog } from "../../../lib/recommendation";
 import { rankFoundations } from "../../../server/ai";
 import { resolveConnection } from "../../../server/connections/service";
 import { safeProviderError } from "../../../server/providers/errors";
+import { isSameOrigin } from "../../../server/request-origin";
 
 export const runtime = "nodejs";
 export const maxDuration = 180;
 export async function POST(request: Request) {
   if (
-    request.headers.get("origin") &&
-    request.headers.get("origin") !== new URL(request.url).origin
+    (request.headers.has("origin") && !isSameOrigin(request)) ||
+    request.headers.get("sec-fetch-site") === "cross-site"
   )
     return NextResponse.json({ error: "Origin not allowed" }, { status: 403 });
   const text = await request.text();

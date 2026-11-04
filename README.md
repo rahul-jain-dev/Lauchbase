@@ -1,6 +1,10 @@
-# Skeleton AI
+# SaaSFoundation
 
-Skeleton AI (formerly LaunchBase; this repository retains its original name) has reviewed idea analysis, explicit scope confirmation, deterministic foundation filtering, grounded plans, an interactive project map and build-plan review. Provider choice is permanent; direct Meta remains the hackathon integration with separate validation. The catalog contains **definitions**, not generated or verified applications. Real generation and ZIP export are the next milestone.
+**From an idea to a buildable foundation.**
+
+SaaSFoundation (previously Skeleton AI and LaunchBase; repository URL unchanged) has reviewed idea analysis, explicit scope confirmation, deterministic foundation filtering, grounded plans, an interactive project map and build-plan review. Direct Meta remains the hackathon integration with separate validation. The catalog contains **definitions**, not generated or verified applications.
+
+The active milestone is submission-only: see [submission brief](docs/HACKATHON_SUBMISSION.md) and [sprint/evidence](docs/SUBMISSION_SPRINT.md). Real generation and ZIP export are deferred until after submission. `render.yaml` prepares one Node process for the current session architecture; it is not a verified deployment.
 
 ## Run locally
 

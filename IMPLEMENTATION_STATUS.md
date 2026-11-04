@@ -1,8 +1,18 @@
-# Skeleton AI implementation status (previously LaunchBase)
+# SaaSFoundation implementation status (previously Skeleton AI and LaunchBase)
 
 **Updated:** November 5, 2026
 **Workspace:** `E:\Meta AI Hackathion`  
-**Current phase:** Requirement-to-foundation planning implemented: reviewed scope, explicit confirmation, stale-plan handling, grounded foundation plan, interactive project map and working build-plan preview. Real generation/export remain unimplemented. Live OpenRouter/Nemotron Ultra checks completed but exposed semantic errors; human review remains necessary. Direct Meta remains live-unverified. The full core vertical slice is incomplete.
+**Current phase:** Submission-only sprint for **SaaSFoundation — From an idea to a buildable foundation.** The user confirmed this final name on November 5. Preserve the existing foundation-architect MVP; defer the full roadmap until after submission. Generation/export remain unimplemented. Direct Meta, hosted deployment, recording and portal receipt require actual evidence. The full core vertical slice is incomplete.
+
+## Active submission sprint — November 5, 2026
+
+- Inspected and integrated PR #1 on `codex/submission-sprint`, preserving both local demo work and the PR's history. Primary development history is untouched. Final name SaaSFoundation supersedes Skeleton AI; repository URL and internal contracts stay unchanged.
+- Final current sprint checks passed: typecheck, lint, **164 tests across 11 files**, production build and **22 desktop/mobile browser scenarios**. Twenty browser scenarios use established fixtures/manual checks; two new unmocked scenarios exercise real local analysis-config/manual comparison/Settings routes. The first browser pass exposed an old hero-copy assertion; it was corrected. Adding the server-only origin helper required two older route suites to mock `server-only`; the production guard was retained.
+- Reproduced actual production `origin_denied` failures from a real loopback browser and configured-proxy requests. The old comparisons used NextRequest's internal listener URL. Added a shared trusted-public-origin helper for Settings, analysis, recommendation and diagnostics; loopback Host fallback is restricted to local hosts, arbitrary forwarded headers do not authorize public origins, and configured HTTPS uses Secure cookies. Actual local browser Settings now returns 200; configured public-origin probe returns 200; foreign-origin probe remains 403. This is local production/proxy simulation evidence, not hosted deployment evidence.
+- Captured and visually inspected silent **33.72-second, 1440×1000** manual-path footage at `artifacts/submission-demo/saasfoundation-manual-demo.webm`, plus screenshots and safe evidence JSON. It uses the real local app/API, no provider fixtures, no analysis requests and one real comparison request. It is visibly labeled manual input/no AI requests, and does not verify Meta or constitute an uploaded final demo. First recording attempts identified a missing Playwright FFmpeg binary and the copied origin guard on inference routes; FFmpeg was installed and those route defects were fixed before the successful capture.
+- `pnpm smoke:meta` skipped with missing configuration (`META_API_KEY` absent/placeholder), model `muse-spark-1.3`, `liveInference: false`. No HTTP call or Meta failure is claimed. Prior gateway results are not direct Meta validation.
+- Prepared a one-process native Node deployment in `render.yaml`; it is configuration only. Hosting access, the authenticated form and video requirements have been requested. No live URL, video link, successful submission or eligibility confirmation is invented.
+- Public schedule matches the working 07:30 IST cutoff. The exact portal remains authoritative. See `docs/SUBMISSION_SPRINT.md`, `docs/HACKATHON_SUBMISSION.md` and `docs/DEMO_SUBMISSION.md` for execution plan, copy and narration.
 
 ## Submission demo preparation — November 5, 2026
 

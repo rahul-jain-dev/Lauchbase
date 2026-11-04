@@ -10,6 +10,7 @@ import {
   getSession,
 } from "../../../server/connections/store";
 import { safeProviderError } from "../../../server/providers/errors";
+import { applicationOrigin, isSameOrigin } from "../../../server/request-origin";
 
 export const runtime = "nodejs";
 export const maxDuration = 180;
@@ -21,11 +22,7 @@ export async function GET(request: Request) {
   return NextResponse.json(connectionView(session), { headers });
 }
 export async function POST(request: Request) {
-  const origin = request.headers.get("origin");
-  if (
-    origin !== new URL(request.url).origin ||
-    request.headers.get("sec-fetch-site") === "cross-site"
-  )
+  if (!isSameOrigin(request))
     return NextResponse.json(
       {
         issue: {
@@ -89,7 +86,7 @@ export async function POST(request: Request) {
       response.cookies.set(COOKIE_NAME, token, {
         httpOnly: true,
         sameSite: "strict",
-        secure: new URL(request.url).protocol === "https:",
+        secure: applicationOrigin(request)?.startsWith("https:") === true,
         path: "/",
       });
     return response;

@@ -16,6 +16,7 @@ import { ANALYSIS_CONTRACT_VERSION } from "../../../lib/ai-contract-version";
 import { checkProfileSnapshot } from "../../../server/connections/service";
 import { requireSession } from "../../../server/connections/store";
 import { assertModel } from "../../../server/connections/profiles";
+import { isSameOrigin } from "../../../server/request-origin";
 
 export const runtime = "nodejs";
 export const maxDuration = 180;
@@ -35,10 +36,7 @@ const Input = z.union([
 ]);
 const headers = { "Cache-Control": "no-store" };
 export async function POST(request: Request) {
-  if (
-    request.headers.get("origin") !== new URL(request.url).origin ||
-    request.headers.get("sec-fetch-site") === "cross-site"
-  )
+  if (!isSameOrigin(request))
     return NextResponse.json(
       { error: "A same-origin request is required." },
       { status: 403, headers },

@@ -1,6 +1,6 @@
-# Skeleton AI submission demo brief
+# SaaSFoundation submission demo brief
 
-Prepared November 5, 2026. The user confirmed the name **Skeleton AI**. Cloud setup work is stopped at the user's request. Focus on the existing local prototype and the submission video. Submission cutoff and video limits are awaiting confirmation; the two-minute format below is provisional.
+Prepared November 5, 2026. The user confirmed the final name **SaaSFoundation**. Cloud setup work is stopped. The submission-only sprint uses a working cutoff of 07:30 IST, subject to the authenticated portal. The video limit is not yet verified; the two-minute format below is provisional.
 
 ## Positioning
 
@@ -29,13 +29,13 @@ Show these working prototype behaviors:
 
 | Time | Screen | Narration |
 |---|---|---|
-| 0:00–0:15 | Product title and brief | “Freelancers can understand a client's idea and still spend time deciding how to start building it. Skeleton AI helps turn that brief into a clear micro-SaaS foundation plan.” |
+| 0:00–0:15 | Product title and brief | “Freelancers can understand a client's idea and still spend time deciding how to start building it. SaaSFoundation helps turn that brief into a clear micro-SaaS foundation plan.” |
 | 0:15–0:35 | Enter the agency idea | “Describe what clients should be able to do, your experience and your constraints. Here we need invitations, private design PDFs and project feedback, without payments or scheduled jobs.” |
 | 0:35–0:55 | Review and confirm requirements | “The prototype makes its understanding editable. You confirm important requirements, correct interpretations and answer decisions that affect the foundation.” |
 | 0:55–1:15 | Proposed foundation and custom work | “This proposes shared-workspace infrastructure. Feedback screens and project-specific client permissions remain visible work, so the foundation's coverage is clear.” |
 | 1:15–1:40 | Both map views; expand two nodes | “The map explains how the application pieces connect and how the freelancer will build it. Each component has a reason, setup needs and an honest status. Existing accounts and optional development tools remain the user's choices.” |
 | 1:40–1:55 | Review build plan | “The build plan records the proposed modules, configuration, custom work and verification steps. This prototype prepares the plan; code assembly and verification are the next milestone.” |
-| 1:55–2:00 | Closing card | “Skeleton AI: a clearer foundation for your next micro-SaaS.” |
+| 1:55–2:00 | Closing card | “SaaSFoundation: a clearer foundation for your next micro-SaaS.” |
 
 Adjust this draft to the actual submission time limit. The times are editorial targets, not a required hackathon format.
 
@@ -48,6 +48,19 @@ Adjust this draft to the actual submission time limit. The times are editorial t
 - Capture the screen at readable zoom. Expand only the nodes needed for the story; avoid scrolling through developer diagnostics, raw JSON or the full technical file list during narration.
 - End with what works now and the next milestone. Do not expand today's scope into a general-purpose product-development agent.
 
-## Scope before recording
+## Available local manual-path footage
 
-The name is confirmed as Skeleton AI. Confirm the submission cutoff/time zone and video limit, simplify the demo's wording and primary next action, verify the chosen flow and capture it. Keep real project generation and broader product-development features for a subsequent explicitly scoped milestone.
+`artifacts/submission-demo/saasfoundation-manual-demo.webm` is a silent 33.72-second clip of the actual local production app. Its visible banner reads “MANUAL INPUT DEMO · NO AI REQUESTS · PROPOSED FOUNDATION.” It demonstrates manual confirmation, a real deterministic comparison, both map views and build-plan review. Sidecar screenshots and `evidence.json` distinguish it from fixture and live-model evidence. Do not use the AI-analysis narration above over this clip without explicitly explaining that the recorded path uses manual input.
+
+Recreate after starting the production app on `http://127.0.0.1:3200`:
+
+```sh
+pnpm exec playwright install ffmpeg
+node scripts/record-manual-demo.mjs
+```
+
+It is not a final edited/voiced video, public video URL, direct Meta validation, deployed-app proof or submission receipt. Use it for fallback/screenshots or record the real configured AI path once authorized access is available.
+
+## Scope before the final recording
+
+The name is confirmed as SaaSFoundation. The working cutoff is 07:30 IST, subject to the authenticated portal; confirm the video limit and required form fields. Keep real project generation and broader product-development features for a subsequent explicitly scoped milestone.

@@ -384,7 +384,7 @@ export function AISettings() {
                   </label>
                   <p className="hint">
                     {models.length} search results. Listing a model does not
-                    establish Skeleton AI compatibility.
+                    establish SaaSFoundation compatibility.
                   </p>
                 </>
               )}
@@ -453,7 +453,7 @@ export function AISettings() {
               )}
               <p className="credit-note">
                 Testing makes two API requests: representative idea analysis,
-                then foundation ranking through Skeleton AI’s real validation.
+                then foundation ranking through SaaSFoundation’s real validation.
                 Each may retry once for a transient failure and consume provider
                 credits. Both checks must pass for this connection and contract
                 version.
