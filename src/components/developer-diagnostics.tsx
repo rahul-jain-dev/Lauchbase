@@ -18,7 +18,7 @@ export function DeveloperDiagnostics({ connection }: { connection: unknown }) {
     <details className="developer-diagnostics">
       <summary>Developer diagnostics</summary>
       <p>
-        This is LaunchBase’s inference connection and evidence, separate from
+        This is Skeleton AI’s inference connection and evidence, separate from
         your product’s technology stack. Historical results keep their original
         provider/model attribution.
       </p>
