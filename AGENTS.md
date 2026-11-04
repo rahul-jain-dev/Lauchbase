@@ -1,8 +1,8 @@
-# LaunchBase development instructions
+# Skeleton AI development instructions
 
 ## Objective and current milestone
 
-LaunchBase helps freelancers and small SaaS builders turn confirmed product requirements into an understandable, supported project foundation. Preserve deterministic compatibility checks, exact supporting excerpts, explicit-answer precedence, review before confirmation, honest verification states, and isolated provider credentials.
+Skeleton AI (previously LaunchBase) helps freelancers and small SaaS builders turn confirmed product requirements into an understandable, supported project foundation. Preserve deterministic compatibility checks, exact supporting excerpts, explicit-answer precedence, review before confirmation, honest verification states, and isolated provider credentials. Historical LaunchBase names in contracts, repository URLs and evidence are intentional; do not rename them solely for branding.
 
 The intake, provider Settings, scoped planning, interactive map and build-plan preview are implemented. Actual foundation generation, ZIP export, generated-code execution and deployment are not implemented. The next product milestone is real assembly from the versioned blueprint, only when requested. Do not infer permission to deploy or complete every milestone.
 

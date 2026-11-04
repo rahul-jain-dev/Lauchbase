@@ -8,7 +8,7 @@ export default function Page() {
     <main>
       <header className="topbar">
         <Link href="/" className="brand">
-          <span className="mark">L</span> LaunchBase
+          <span className="mark">S</span> Skeleton AI
         </Link>
         <span className="badge">BUILD FOR YOUR WORLD</span>
         <span className="release">Foundation explorer · 0.1</span>
@@ -97,7 +97,7 @@ export default function Page() {
         </div>
       </details>
       <footer>
-        LaunchBase / Meta AI hackathon{" "}
+        Skeleton AI / Meta AI hackathon{" "}
         <span>Transparent choices. Observable progress.</span>
       </footer>
     </main>

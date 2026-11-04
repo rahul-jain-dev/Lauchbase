@@ -1,6 +1,6 @@
-# LaunchBase
+# Skeleton AI
 
-LaunchBase has reviewed idea analysis, explicit scope confirmation, deterministic foundation filtering, grounded plans, an interactive project map and build-plan review. Provider choice is permanent; direct Meta remains the hackathon integration with separate validation. The catalog contains **definitions**, not generated or verified applications. Real generation and ZIP export are the next milestone.
+Skeleton AI (previously LaunchBase) has reviewed idea analysis, explicit scope confirmation, deterministic foundation filtering, grounded plans, an interactive project map and build-plan review. Provider choice is permanent; direct Meta remains the hackathon integration with separate validation. The catalog contains **definitions**, not generated or verified applications. Real generation and ZIP export are the next milestone.
 
 ## Run locally
 
